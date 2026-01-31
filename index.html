@@ -1,29 +1,207 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreditBuddy Report</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <title>CreditBuddy | Validation Report</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50">
     <div id="root"></div>
 
     <script type="text/babel">
-        // === PASTE EVERYTHING FROM YOUR ReportDashboard.jsx FILE BELOW ===
-        
-        const ReportDashboard = () => {
-           // Copy and paste the code Gemini gave you here
-           return (<div>Replace this with your actual code</div>); 
+        const { useState, useEffect } = React;
+
+        // --- Helper to render Lucide icons in a React-friendly way ---
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const iconRef = React.useRef(null);
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [name]);
+            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
         };
 
-        // === PASTE EVERYTHING ABOVE THIS LINE ===
+        // --- Reusable UI Components ---
+        const Card = ({ children, className = "" }) => (
+            <div className={`bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden ${className}`}>
+                {children}
+            </div>
+        );
+
+        const Badge = ({ children, color = "blue" }) => {
+            const colors = {
+                blue: "bg-blue-100 text-blue-700",
+                green: "bg-emerald-100 text-emerald-700",
+                amber: "bg-amber-100 text-amber-700",
+                red: "bg-rose-100 text-rose-700",
+            };
+            return (
+                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${colors[color] || colors.blue}`}>
+                    {children}
+                </span>
+            );
+        };
+
+        const CircularProgress = ({ value, label, subLabel, color = "#3b82f6" }) => {
+            const radius = 35;
+            const circumference = 2 * Math.PI * radius;
+            const strokeDashoffset = circumference - (value / 100) * circumference;
+
+            return (
+                <div className="flex flex-col items-center justify-center p-4">
+                    <div className="relative w-32 h-32 flex items-center justify-center">
+                        <svg className="w-full h-full transform -rotate-90">
+                            <circle cx="64" cy="64" r={radius} stroke="#e2e8f0" strokeWidth="8" fill="transparent" />
+                            <circle
+                                cx="64" cy="64" r={radius} stroke={color} strokeWidth="8" fill="transparent"
+                                strokeDasharray={circumference}
+                                strokeDashoffset={strokeDashoffset}
+                                strokeLinecap="round"
+                                className="transition-all duration-1000 ease-out"
+                            />
+                        </svg>
+                        <span className="absolute text-2xl font-bold text-slate-700">{value}%</span>
+                    </div>
+                    <h4 className="mt-2 font-semibold text-slate-800 text-center">{label}</h4>
+                    <p className="text-xs text-slate-500 text-center">{subLabel}</p>
+                </div>
+            );
+        };
+
+        const SimpleBarChart = ({ data, maxVal }) => (
+            <div className="w-full space-y-3">
+                {data.map((item, idx) => (
+                    <div key={idx} className="w-full">
+                        <div className="flex justify-between text-sm mb-1">
+                            <span className="font-medium text-slate-700">{item.label}</span>
+                            <span className="font-bold text-slate-900">{item.value}%</span>
+                        </div>
+                        <div className="w-full bg-slate-100 rounded-full h-3">
+                            <div className={`h-3 rounded-full ${item.color || 'bg-blue-500'}`} style={{ width: `${(item.value / maxVal) * 100}%` }}></div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+
+        // --- Main App Component ---
+        function App() {
+            const [activeTab, setActiveTab] = useState('overview');
+
+            return (
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+                    <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+                        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-blue-600 p-2 rounded-lg text-white">
+                                    <Icon name="trending-up" size={24} />
+                                </div>
+                                <div>
+                                    <h1 className="text-xl font-bold text-slate-900 leading-tight">CreditBuddy</h1>
+                                    <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Validation Report</p>
+                                </div>
+                            </div>
+                            <div className="text-right hidden sm:block">
+                                <p className="text-sm font-medium">Prepared by Debasish Mallick</p>
+                                <p className="text-xs text-slate-400">Founder & CEO</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+                        <section className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 sm:p-10 text-white shadow-lg">
+                            <div className="flex flex-col md:flex-row gap-6 items-start justify-between">
+                                <div className="space-y-4 max-w-2xl">
+                                    <h2 className="text-2xl font-bold">Executive Summary</h2>
+                                    <p className="text-blue-100 leading-relaxed text-lg">
+                                        Validation confirms critical market demand. Ground research across <span className="font-bold text-white">1,000+ students</span> and <span className="font-bold text-white">10+ campuses</span> reveals a clear need for an ethical, student-first ecosystem.
+                                    </p>
+                                    <div className="flex flex-wrap gap-3 mt-2">
+                                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
+                                            <Icon name="shield-check" size={16} /> RBI Compliant
+                                        </div>
+                                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
+                                            <Icon name="target" size={16} /> Student First
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 min-w-[200px]">
+                                    <div className="text-center">
+                                        <p className="text-blue-100 text-sm font-medium uppercase mb-1">Avg. Monthly Shortfall</p>
+                                        <div className="text-4xl font-bold text-white mb-1">₹7,500</div>
+                                        <div className="text-xs text-blue-200">Range: ₹5k - ₹10k</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div className="flex overflow-x-auto pb-2 border-b border-slate-200 gap-6">
+                            {['overview', 'demographics', 'feedback', 'market'].map((tab) => (
+                                <button key={tab} onClick={() => setActiveTab(tab)} className={`pb-3 text-sm font-medium capitalize whitespace-nowrap transition-colors ${activeTab === tab ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-500 hover:text-slate-700'}`}>
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+
+                        {activeTab === 'overview' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <Card className="p-5 flex flex-col items-center justify-center text-center">
+                                    <div className="p-3 bg-rose-50 rounded-full mb-3"><Icon name="alert-triangle" className="text-rose-500" /></div>
+                                    <h3 className="text-3xl font-bold text-slate-800">75%</h3>
+                                    <p className="text-sm text-slate-500 mt-1">Face regular financial challenges</p>
+                                </Card>
+                                <Card className="p-5 flex flex-col items-center justify-center text-center">
+                                    <div className="p-3 bg-emerald-50 rounded-full mb-3"><Icon name="trending-up" className="text-emerald-500" /></div>
+                                    <h3 className="text-3xl font-bold text-slate-800">78%</h3>
+                                    <p className="text-sm text-slate-500 mt-1">Interest in "Earn & Learn"</p>
+                                </Card>
+                                <Card className="p-5 flex flex-col items-center justify-center text-center">
+                                    <div className="p-3 bg-blue-50 rounded-full mb-3"><Icon name="shield-check" className="text-blue-500" /></div>
+                                    <h3 className="text-3xl font-bold text-slate-800">62%</h3>
+                                    <p className="text-sm text-slate-500 mt-1">Prefer RBI-Compliant</p>
+                                </Card>
+                                <Card className="p-5 flex flex-col items-center justify-center text-center">
+                                    <div className="p-3 bg-amber-50 rounded-full mb-3"><Icon name="activity" className="text-amber-500" /></div>
+                                    <h3 className="text-3xl font-bold text-slate-800">40%</h3>
+                                    <p className="text-sm text-slate-500 mt-1">Have used lending apps</p>
+                                </Card>
+                            </div>
+                        )}
+
+                        {activeTab === 'market' && (
+                            <Card className="p-6">
+                                <h3 className="font-bold text-lg text-slate-800 mb-6">Market Potential</h3>
+                                <div className="space-y-6">
+                                    <SimpleBarChart maxVal={100} data={[
+                                        { label: "Total Addressable Market (TAM)", value: 100, color: 'bg-blue-900' },
+                                        { label: "Serviceable Market (Urban)", value: 58, color: 'bg-blue-600' }
+                                    ]} />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-slate-50 p-3 rounded-lg text-center">
+                                            <div className="text-2xl font-bold text-slate-800">9.8%</div>
+                                            <div className="text-xs text-slate-500">CAGR (2024-29)</div>
+                                        </div>
+                                        <div className="bg-slate-50 p-3 rounded-lg text-center">
+                                            <div className="text-2xl font-bold text-slate-800">2x</div>
+                                            <div className="text-xs text-slate-500">Fintech Penetration</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Card>
+                        )}
+                    </main>
+                </div>
+            );
+        }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<ReportDashboard />);
+        root.render(<App />);
     </script>
 </body>
 </html>

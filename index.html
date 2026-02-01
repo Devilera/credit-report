@@ -3,36 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreditBuddy | Validation Report</title>
+    <title>CreditBuddy Validation Report</title>
     
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel (to compile JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Custom Styles for Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .animate-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="bg-slate-50 text-slate-800">
+
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
 
-        // --- Lucide Icon Wrapper ---
-        const Icon = ({ name, size = 24, className = "" }) => {
-            useEffect(() => {
-                lucide.createIcons();
-            }, [name]);
-            return <i data-lucide={name} className={className} style={{ width: size, height: size }}></i>;
-        };
+        // --- Icon Components (Replacing lucide-react for browser compatibility) ---
+        
+        const IconBase = ({ children, size = 24, className = "", ...props }) => (
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width={size} 
+                height={size} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={className} 
+                {...props}
+            >
+                {children}
+            </svg>
+        );
+
+        const Users = (props) => <IconBase {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></IconBase>;
+        const AlertTriangle = (props) => <IconBase {...props}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></IconBase>;
+        const TrendingUp = (props) => <IconBase {...props}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></IconBase>;
+        const ShieldCheck = (props) => <IconBase {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></IconBase>;
+        const Wallet = (props) => <IconBase {...props}><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9.34a2 2 0 0 0-1.02-1.9l-4.9-1.96c-.63-.25-1.32-.08-1.72.4L12 6.54a2 2 0 0 0-.4 1.72"/><path d="M12 14h.01"/></IconBase>;
+        const BookOpen = (props) => <IconBase {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></IconBase>;
+        const ChevronRight = (props) => <IconBase {...props}><polyline points="9 18 15 12 9 6"/></IconBase>;
+        const Quote = (props) => <IconBase {...props}><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></IconBase>;
+        const Target = (props) => <IconBase {...props}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></IconBase>;
+        const BarChart3 = (props) => <IconBase {...props}><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></IconBase>;
+        const PieChart = (props) => <IconBase {...props}><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></IconBase>;
+        const Activity = (props) => <IconBase {...props}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></IconBase>;
+
 
         // --- Reusable UI Components ---
+
         const Card = ({ children, className = "" }) => (
             <div className={`bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden ${className}`}>
                 {children}
@@ -48,10 +79,12 @@
             };
             return (
                 <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${colors[color] || colors.blue}`}>
-                    {children}
+                {children}
                 </span>
             );
         };
+
+        // --- Custom Chart Components ---
 
         const CircularProgress = ({ value, label, subLabel, color = "#3b82f6" }) => {
             const radius = 35;
@@ -60,241 +93,427 @@
 
             return (
                 <div className="flex flex-col items-center justify-center p-4">
-                    <div className="relative w-32 h-32 flex items-center justify-center">
-                        <svg className="w-full h-full transform -rotate-90">
-                            <circle cx="64" cy="64" r={radius} stroke="#e2e8f0" strokeWidth="8" fill="transparent" />
-                            <circle cx="64" cy="64" r={radius} stroke={color} strokeWidth="8" fill="transparent"
-                                strokeDasharray={circumference}
-                                strokeDashoffset={strokeDashoffset}
-                                strokeLinecap="round"
-                                className="transition-all duration-1000 ease-out"
-                            />
-                        </svg>
-                        <span className="absolute text-2xl font-bold text-slate-700">{value}%</span>
-                    </div>
-                    <h4 className="mt-2 font-semibold text-slate-800 text-center">{label}</h4>
-                    <p className="text-xs text-slate-500 text-center">{subLabel}</p>
+                <div className="relative w-32 h-32 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90">
+                    <circle
+                        cx="64"
+                        cy="64"
+                        r={radius}
+                        stroke="#e2e8f0"
+                        strokeWidth="8"
+                        fill="transparent"
+                    />
+                    <circle
+                        cx="64"
+                        cy="64"
+                        r={radius}
+                        stroke={color}
+                        strokeWidth="8"
+                        fill="transparent"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
+                        strokeLinecap="round"
+                        className="transition-all duration-1000 ease-out"
+                    />
+                    </svg>
+                    <span className="absolute text-2xl font-bold text-slate-700">{value}%</span>
+                </div>
+                <h4 className="mt-2 font-semibold text-slate-800 text-center">{label}</h4>
+                <p className="text-xs text-slate-500 text-center">{subLabel}</p>
                 </div>
             );
         };
 
-        const SimpleBarChart = ({ data, maxVal }) => (
-            <div className="w-full space-y-3">
+        const SimpleBarChart = ({ data, maxVal }) => {
+            return (
+                <div className="w-full space-y-3">
                 {data.map((item, idx) => (
                     <div key={idx} className="w-full">
-                        <div className="flex justify-between text-sm mb-1">
-                            <span className="font-medium text-slate-700">{item.label}</span>
-                            <span className="font-bold text-slate-900">{item.value}%</span>
-                        </div>
-                        <div className="w-full bg-slate-100 rounded-full h-3">
-                            <div className={`h-3 rounded-full ${item.color || 'bg-blue-500'}`} style={{ width: `${(item.value / maxVal) * 100}%` }}></div>
-                        </div>
+                    <div className="flex justify-between text-sm mb-1">
+                        <span className="font-medium text-slate-700">{item.label}</span>
+                        <span className="font-bold text-slate-900">{item.value}%</span>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-3">
+                        <div 
+                        className={`h-3 rounded-full ${item.color || 'bg-blue-500'}`} 
+                        style={{ width: `${(item.value / maxVal) * 100}%` }}
+                        ></div>
+                    </div>
                     </div>
                 ))}
-            </div>
-        );
+                </div>
+            );
+        };
 
-        // --- Main App Component ---
+        // --- Main Report Component ---
+
         function App() {
             const [activeTab, setActiveTab] = useState('overview');
 
             return (
-                <div className="min-h-screen bg-slate-50 text-slate-800">
-                    <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-                        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-blue-600 p-2 rounded-lg text-white">
-                                    <Icon name="trending-up" size={24} />
-                                </div>
-                                <div>
-                                    <h1 className="text-xl font-bold text-slate-900 leading-tight">CreditBuddy</h1>
-                                    <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Validation Report</p>
-                                </div>
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-12">
+                
+                {/* Header */}
+                <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+                    <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-blue-600 p-2 rounded-lg text-white">
+                        <TrendingUp size={24} />
+                        </div>
+                        <div>
+                        <h1 className="text-xl font-bold text-slate-900 leading-tight">CreditBuddy</h1>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Validation Report</p>
+                        </div>
+                    </div>
+                    <div className="text-right hidden sm:block">
+                        <p className="text-sm font-medium">Prepared by Debasish Mallick</p>
+                        <p className="text-xs text-slate-400">Founder & CEO</p>
+                    </div>
+                    </div>
+                </header>
+
+                <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+                    {/* Executive Summary Card */}
+                    <section className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 sm:p-10 text-white shadow-lg">
+                    <div className="flex flex-col md:flex-row gap-6 items-start justify-between">
+                        <div className="space-y-4 max-w-2xl">
+                        <h2 className="text-2xl font-bold">Executive Summary</h2>
+                        <p className="text-blue-100 leading-relaxed text-lg">
+                            Validation confirms critical market demand. Ground research across <span className="font-bold text-white">1,000+ students</span> and <span className="font-bold text-white">10+ campuses</span> reveals a clear need for an ethical, student-first ecosystem combining microloans, income enablement, and financial literacy.
+                        </p>
+                        <div className="flex flex-wrap gap-3 mt-2">
+                            <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
+                            <ShieldCheck size={16} /> RBI Compliant
                             </div>
-                            <div className="text-right hidden sm:block">
-                                <p className="text-sm font-medium text-slate-900">Debasish Mallick</p>
-                                <p className="text-xs text-slate-400">Founder & CEO</p>
+                            <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
+                            <Target size={16} /> Student First
                             </div>
                         </div>
-                    </header>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 min-w-[200px]">
+                        <div className="text-center">
+                            <p className="text-blue-100 text-sm font-medium uppercase mb-1">Avg. Monthly Shortfall</p>
+                            <div className="text-4xl font-bold text-white mb-1">₹7,500</div>
+                            <div className="text-xs text-blue-200">Range: ₹5k - ₹10k</div>
+                        </div>
+                        </div>
+                    </div>
+                    </section>
 
-                    <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-                        <section className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 sm:p-10 text-white shadow-lg">
-                            <div className="flex flex-col md:flex-row gap-6 items-start justify-between">
-                                <div className="space-y-4 max-w-2xl">
-                                    <h2 className="text-2xl font-bold">Executive Summary</h2>
-                                    <p className="text-blue-100 leading-relaxed text-lg">
-                                        Validation confirms critical market demand. Ground research across <span className="font-bold text-white">1,000+ students</span> reveals a clear need for an ethical, student-first ecosystem combining microloans, income enablement, and financial literacy.
-                                    </p>
-                                    <div className="flex flex-wrap gap-3">
-                                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
-                                            <Icon name="shield-check" size={16} /> RBI Compliant
-                                        </div>
-                                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
-                                            <Icon name="target" size={16} /> Student First
-                                        </div>
-                                    </div>
+                    {/* Navigation Tabs */}
+                    <div className="flex overflow-x-auto pb-2 border-b border-slate-200 gap-6">
+                    {['overview', 'demographics', 'feedback', 'market'].map((tab) => (
+                        <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`pb-3 text-sm font-medium capitalize whitespace-nowrap transition-colors ${
+                            activeTab === tab 
+                            ? 'text-blue-600 border-b-2 border-blue-600' 
+                            : 'text-slate-500 hover:text-slate-700'
+                        }`}
+                        >
+                        {tab}
+                        </button>
+                    ))}
+                    </div>
+
+                    {/* Content Sections */}
+                    {activeTab === 'overview' && (
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        {/* Key Stats Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Card className="p-5 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+                            <div className="p-3 bg-rose-50 rounded-full mb-3">
+                            <AlertTriangle className="text-rose-500" size={24} />
+                            </div>
+                            <h3 className="text-3xl font-bold text-slate-800">75%</h3>
+                            <p className="text-sm text-slate-500 mt-1">Face regular financial challenges</p>
+                        </Card>
+
+                        <Card className="p-5 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+                            <div className="p-3 bg-emerald-50 rounded-full mb-3">
+                            <TrendingUp className="text-emerald-500" size={24} />
+                            </div>
+                            <h3 className="text-3xl font-bold text-slate-800">78%</h3>
+                            <p className="text-sm text-slate-500 mt-1">Interest in "Earn & Learn" features</p>
+                        </Card>
+
+                        <Card className="p-5 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+                            <div className="p-3 bg-blue-50 rounded-full mb-3">
+                            <ShieldCheck className="text-blue-500" size={24} />
+                            </div>
+                            <h3 className="text-3xl font-bold text-slate-800">62%</h3>
+                            <p className="text-sm text-slate-500 mt-1">Prefer RBI-Compliant platforms</p>
+                        </Card>
+
+                        <Card className="p-5 flex flex-col items-center justify-center text-center hover:shadow-md transition-shadow">
+                            <div className="p-3 bg-amber-50 rounded-full mb-3">
+                            <Activity className="text-amber-500" size={24} />
+                            </div>
+                            <h3 className="text-3xl font-bold text-slate-800">40%</h3>
+                            <p className="text-sm text-slate-500 mt-1">Have used lending apps before</p>
+                        </Card>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Financial Distress Chart */}
+                        <Card className="p-6">
+                            <div className="flex justify-between items-center mb-6">
+                            <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                                <BarChart3 className="text-blue-500" size={20}/> Financial Distress Levels
+                            </h3>
+                            </div>
+                            <div className="flex flex-wrap justify-around">
+                            <CircularProgress 
+                                value={73} 
+                                label="Recent Issues" 
+                                subLabel="Faced issues in last months" 
+                                color="#f43f5e" 
+                            />
+                            <CircularProgress 
+                                value={75} 
+                                label="Regular Challenges" 
+                                subLabel="Affects academics/daily life" 
+                                color="#f59e0b" 
+                            />
+                            </div>
+                            <div className="mt-6 bg-slate-50 p-4 rounded-lg">
+                            <h4 className="text-sm font-semibold text-slate-700 mb-2">Key Drivers:</h4>
+                            <ul className="text-sm text-slate-600 space-y-1 list-disc pl-4">
+                                <li>Monthly cash gaps (₹1,000 - ₹10,000)</li>
+                                <li>Lack of regular income sources</li>
+                                <li>Irregular parental funding</li>
+                            </ul>
+                            </div>
+                        </Card>
+
+                        {/* Ecosystem Interest */}
+                        <Card className="p-6">
+                            <div className="flex justify-between items-center mb-6">
+                            <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                                <PieChart className="text-emerald-500" size={20}/> Feature Interest
+                            </h3>
+                            </div>
+                            <div className="space-y-6">
+                            <SimpleBarChart 
+                                maxVal={100}
+                                data={[
+                                { label: "Interest in Earn & Learn", value: 78, color: 'bg-emerald-500' },
+                                { label: "Prefer RBI Compliance", value: 62, color: 'bg-blue-600' },
+                                { label: "Used Existing Apps", value: 40, color: 'bg-slate-400' },
+                                ]}
+                            />
+                            <div className="grid grid-cols-3 gap-2 mt-4">
+                                <div className="bg-blue-50 p-3 rounded-lg text-center">
+                                <Wallet size={20} className="mx-auto text-blue-600 mb-1" />
+                                <span className="text-xs font-bold text-blue-800 block">Borrow</span>
+                                <span className="text-[10px] text-blue-600">Fair Microloans</span>
                                 </div>
-                                <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 min-w-[200px]">
-                                    <div className="text-center">
-                                        <p className="text-blue-100 text-sm font-medium uppercase mb-1">Avg. Monthly Shortfall</p>
-                                        <div className="text-4xl font-bold text-white mb-1">₹7,500</div>
-                                        <div className="text-xs text-blue-200">Range: ₹5k - ₹10k</div>
-                                    </div>
+                                <div className="bg-emerald-50 p-3 rounded-lg text-center">
+                                <TrendingUp size={20} className="mx-auto text-emerald-600 mb-1" />
+                                <span className="text-xs font-bold text-emerald-800 block">Earn</span>
+                                <span className="text-[10px] text-emerald-600">Campus Gigs</span>
+                                </div>
+                                <div className="bg-amber-50 p-3 rounded-lg text-center">
+                                <BookOpen size={20} className="mx-auto text-amber-600 mb-1" />
+                                <span className="text-xs font-bold text-amber-800 block">Learn</span>
+                                <span className="text-[10px] text-amber-600">Fin-Literacy</span>
                                 </div>
                             </div>
-                        </section>
+                            </div>
+                        </Card>
+                        </div>
+                    </div>
+                    )}
 
-                        <div className="flex overflow-x-auto pb-2 border-b border-slate-200 gap-6">
-                            {['overview', 'demographics', 'feedback', 'market'].map((tab) => (
-                                <button key={tab} onClick={() => setActiveTab(tab)}
-                                    className={`pb-3 text-sm font-bold capitalize whitespace-nowrap transition-colors ${activeTab === tab ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-600'}`}>
-                                    {tab}
-                                </button>
+                    {activeTab === 'demographics' && (
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        <Card className="overflow-hidden">
+                        <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                            <h3 className="font-bold text-lg text-slate-800">Research Methodology</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+                            <div className="p-6 text-center">
+                            <div className="text-3xl font-bold text-blue-600 mb-1">1,000+</div>
+                            <div className="text-sm text-slate-500 font-medium">Students Surveyed</div>
+                            </div>
+                            <div className="p-6 text-center">
+                            <div className="text-3xl font-bold text-blue-600 mb-1">10+</div>
+                            <div className="text-sm text-slate-500 font-medium">Major Campuses</div>
+                            </div>
+                            <div className="p-6 text-center">
+                            <div className="text-3xl font-bold text-blue-600 mb-1">18-24</div>
+                            <div className="text-sm text-slate-500 font-medium">Age Group</div>
+                            </div>
+                            <div className="p-6 text-center">
+                            <div className="text-3xl font-bold text-blue-600 mb-1">Pan-India</div>
+                            <div className="text-sm text-slate-500 font-medium">Target Region</div>
+                            </div>
+                        </div>
+                        </Card>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card className="p-6">
+                            <h3 className="font-bold text-lg text-slate-800 mb-4">Financial Needs (Use Cases)</h3>
+                            <ul className="space-y-3">
+                            {[
+                                { name: "Rent & Accommodation", icon: "🏠" },
+                                { name: "Food & Daily Expenses", icon: "🍔" },
+                                { name: "Medical Emergencies", icon: "🏥" },
+                                { name: "Exam Fees & Projects", icon: "📚" },
+                                { name: "Internship Costs", icon: "💼" }
+                            ].map((item, i) => (
+                                <li key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <span className="flex items-center gap-3 font-medium text-slate-700">
+                                    <span>{item.icon}</span> {item.name}
+                                </span>
+                                <ChevronRight size={16} className="text-slate-400" />
+                                </li>
+                            ))}
+                            </ul>
+                        </Card>
+
+                        <Card className="p-6">
+                            <h3 className="font-bold text-lg text-slate-800 mb-4">Existing Market Sentiment</h3>
+                            <div className="space-y-4">
+                            <div className="p-4 bg-rose-50 border border-rose-100 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2 text-rose-700 font-bold">
+                                <AlertTriangle size={18} />
+                                Pain Points
+                                </div>
+                                <p className="text-sm text-slate-700">Students describe current apps as "Expensive" and "Untrustworthy".</p>
+                                <div className="flex gap-2 mt-3">
+                                    <Badge color="red">70%+ APR</Badge>
+                                    <Badge color="red">Hidden Fees</Badge>
+                                    <Badge color="red">Harassment</Badge>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2 text-blue-700 font-bold">
+                                <ShieldCheck size={18} />
+                                The Opportunity
+                                </div>
+                                <p className="text-sm text-slate-700">62% explicitly prefer RBI-compliant, transparent platforms.</p>
+                            </div>
+                            </div>
+                        </Card>
+                        </div>
+                    </div>
+                    )}
+
+                    {activeTab === 'feedback' && (
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card className="p-6 bg-slate-800 text-white relative">
+                            <Quote size={40} className="text-slate-600 absolute top-4 right-4 opacity-20" />
+                            <p className="italic text-slate-200 mb-4 text-lg">"Finally, a platform that understands students and prioritizes trust over profit."</p>
+                            <div className="mt-auto pt-4 border-t border-slate-700">
+                            <p className="font-bold text-sm">Student Participant</p>
+                            <p className="text-xs text-slate-400">Campus Interview</p>
+                            </div>
+                        </Card>
+
+                        <Card className="p-6 relative">
+                            <Quote size={40} className="text-slate-200 absolute top-4 right-4" />
+                            <p className="italic text-slate-700 mb-4 text-lg">"Transparency and ethical lending will make this sustainable. Communicate how data is protected."</p>
+                            <div className="mt-auto pt-4 border-t border-slate-100">
+                            <p className="font-bold text-sm text-slate-900">Bhupesh Sahoo</p>
+                            <p className="text-xs text-slate-500">BITS Pilani</p>
+                            </div>
+                        </Card>
+
+                        <Card className="p-6 relative">
+                            <Quote size={40} className="text-slate-200 absolute top-4 right-4" />
+                            <p className="italic text-slate-700 mb-4 text-lg">"UI design can be improved, but the concept is great. Focus on making it student-friendly."</p>
+                            <div className="mt-auto pt-4 border-t border-slate-100">
+                            <p className="font-bold text-sm text-slate-900">Bimal Kumar</p>
+                            <p className="text-xs text-slate-500">SCB Medical College</p>
+                            </div>
+                        </Card>
+                        </div>
+
+                        <Card className="p-6">
+                        <h3 className="font-bold text-lg text-slate-800 mb-4">Themes from Qualitative Research</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[
+                            "Appreciation for Transparency",
+                            "High interest in Income-linked features",
+                            "Demand for clear Data Protection",
+                            "Preference for Campus-led distribution"
+                            ].map((theme, i) => (
+                            <div key={i} className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg text-indigo-900 text-sm font-medium">
+                                <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+                                {theme}
+                            </div>
                             ))}
                         </div>
+                        </Card>
+                    </div>
+                    )}
 
-                        {activeTab === 'overview' && (
-                            <div className="space-y-6 animate-in">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    <Card className="p-5 flex flex-col items-center text-center">
-                                        <div className="p-3 bg-rose-50 rounded-full mb-3"><Icon name="alert-triangle" className="text-rose-500" /></div>
-                                        <h3 className="text-3xl font-bold">75%</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Face regular financial challenges</p>
-                                    </Card>
-                                    <Card className="p-5 flex flex-col items-center text-center">
-                                        <div className="p-3 bg-emerald-50 rounded-full mb-3"><Icon name="trending-up" className="text-emerald-500" /></div>
-                                        <h3 className="text-3xl font-bold">78%</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Interest in "Earn & Learn"</p>
-                                    </Card>
-                                    <Card className="p-5 flex flex-col items-center text-center">
-                                        <div className="p-3 bg-blue-50 rounded-full mb-3"><Icon name="shield-check" className="text-blue-500" /></div>
-                                        <h3 className="text-3xl font-bold">62%</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Prefer RBI-Compliant</p>
-                                    </Card>
-                                    <Card className="p-5 flex flex-col items-center text-center">
-                                        <div className="p-3 bg-amber-50 rounded-full mb-3"><Icon name="activity" className="text-amber-500" /></div>
-                                        <h3 className="text-3xl font-bold">40%</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Have used lending apps</p>
-                                    </Card>
+                    {activeTab === 'market' && (
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card className="p-6">
+                            <h3 className="font-bold text-lg text-slate-800 mb-6">Market Potential</h3>
+                            <div className="space-y-6">
+                            <div>
+                                <div className="flex justify-between mb-1">
+                                    <span className="text-sm font-medium text-slate-600">Total Addressable Market (TAM)</span>
+                                    <span className="text-sm font-bold text-slate-900">43M+ Students</span>
                                 </div>
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <Card className="p-6">
-                                        <h3 className="font-bold text-lg mb-6 flex items-center gap-2"><Icon name="bar-chart-3" className="text-blue-500" size={20} /> Financial Distress</h3>
-                                        <div className="flex flex-wrap justify-around">
-                                            <CircularProgress value={73} label="Recent Issues" subLabel="Last few months" color="#f43f5e" />
-                                            <CircularProgress value={75} label="Regular Challenges" subLabel="Affects academics" color="#f59e0b" />
-                                        </div>
-                                    </Card>
-                                    <Card className="p-6">
-                                        <h3 className="font-bold text-lg mb-6 flex items-center gap-2"><Icon name="pie-chart" className="text-emerald-500" size={20} /> Feature Interest</h3>
-                                        <SimpleBarChart maxVal={100} data={[
-                                            { label: "Earn & Learn Interest", value: 78, color: 'bg-emerald-500' },
-                                            { label: "RBI Compliance Preference", value: 62, color: 'bg-blue-600' },
-                                            { label: "Current App Users", value: 40, color: 'bg-slate-400' },
-                                        ]} />
-                                    </Card>
+                                <div className="w-full bg-slate-100 rounded-full h-4">
+                                    <div className="bg-blue-900 h-4 rounded-full w-full"></div>
                                 </div>
                             </div>
-                        )}
-
-                        {activeTab === 'demographics' && (
-                            <div className="space-y-6 animate-in">
-                                <Card>
-                                    <div className="bg-slate-50 px-6 py-4 border-b border-slate-200"><h3 className="font-bold">Research Methodology</h3></div>
-                                    <div className="grid grid-cols-2 lg:grid-cols-4 p-6 divide-x divide-slate-100">
-                                        <div className="text-center px-4">
-                                            <div className="text-3xl font-bold text-blue-600">1,000+</div>
-                                            <div className="text-xs text-slate-500 font-medium uppercase mt-1">Students</div>
-                                        </div>
-                                        <div className="text-center px-4">
-                                            <div className="text-3xl font-bold text-blue-600">10+</div>
-                                            <div className="text-xs text-slate-500 font-medium uppercase mt-1">Campuses</div>
-                                        </div>
-                                        <div className="text-center px-4">
-                                            <div className="text-3xl font-bold text-blue-600">18-24</div>
-                                            <div className="text-xs text-slate-500 font-medium uppercase mt-1">Age Group</div>
-                                        </div>
-                                        <div className="text-center px-4">
-                                            <div className="text-3xl font-bold text-blue-600">Odisha</div>
-                                            <div className="text-xs text-slate-500 font-medium uppercase mt-1">Focus Region</div>
-                                        </div>
-                                    </div>
-                                </Card>
+                            <div>
+                                <div className="flex justify-between mb-1">
+                                    <span className="text-sm font-medium text-slate-600">Serviceable Market (Urban/Semi-Urban)</span>
+                                    <span className="text-sm font-bold text-slate-900">25M Students</span>
+                                </div>
+                                <div className="w-full bg-slate-100 rounded-full h-4">
+                                    <div className="bg-blue-600 h-4 rounded-full w-[58%]"></div>
+                                </div>
                             </div>
-                        )}
-
-                        {activeTab === 'feedback' && (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in">
-                                <Card className="p-6 bg-slate-800 text-white relative">
-                                    <Icon name="quote" className="text-slate-600 absolute top-4 right-4 opacity-30" size={40} />
-                                    <p className="italic text-slate-200 mb-6 text-lg relative z-10">"Finally, a platform that understands students and prioritizes trust over profit."</p>
-                                    <div className="mt-auto pt-4 border-t border-slate-700">
-                                        <p className="font-bold text-sm">Student Participant</p>
-                                        <p className="text-xs text-slate-400">Campus Interview</p>
-                                    </div>
-                                </Card>
-                                <Card className="p-6 relative text-slate-700">
-                                    <Icon name="quote" className="text-slate-100 absolute top-4 right-4" size={40} />
-                                    <p className="italic mb-6 text-lg relative z-10">"Transparency and ethical lending will make this sustainable. Communicate how data is protected."</p>
-                                    <div className="mt-auto pt-4 border-t border-slate-100">
-                                        <p className="font-bold text-sm">Bhupesh Sahoo</p>
-                                        <p className="text-xs text-slate-400">BITS Pilani</p>
-                                    </div>
-                                </Card>
-                                <Card className="p-6 relative text-slate-700">
-                                    <Icon name="quote" className="text-slate-100 absolute top-4 right-4" size={40} />
-                                    <p className="italic mb-6 text-lg relative z-10">"UI design can be improved, but the concept is great. Focus on making it student-friendly."</p>
-                                    <div className="mt-auto pt-4 border-t border-slate-100">
-                                        <p className="font-bold text-sm text-slate-900">Bimal Kumar</p>
-                                        <p className="text-xs text-slate-400">SCB Medical College</p>
-                                    </div>
-                                </Card>
+                            <div className="pt-4 grid grid-cols-2 gap-4">
+                                <div className="bg-slate-50 p-3 rounded-lg text-center">
+                                    <div className="text-2xl font-bold text-slate-800">9.8%</div>
+                                    <div className="text-xs text-slate-500">CAGR (2024-29)</div>
+                                </div>
+                                <div className="bg-slate-50 p-3 rounded-lg text-center">
+                                    <div className="text-2xl font-bold text-slate-800">2x</div>
+                                    <div className="text-xs text-slate-500">Fintech Penetration</div>
+                                </div>
                             </div>
-                        )}
-
-                        {activeTab === 'market' && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in">
-                                <Card className="p-6">
-                                    <h3 className="font-bold text-lg text-slate-800 mb-6">Market Potential</h3>
-                                    <SimpleBarChart maxVal={100} data={[
-                                        { label: "TAM (Total Students)", value: 100, color: 'bg-blue-900' },
-                                        { label: "Serviceable Market", value: 58, color: 'bg-blue-600' }
-                                    ]} />
-                                    <div className="grid grid-cols-2 gap-4 mt-8">
-                                        <div className="bg-slate-50 p-4 rounded-lg">
-                                            <div className="text-2xl font-bold text-slate-800">9.8%</div>
-                                            <div className="text-xs text-slate-500 uppercase font-semibold">CAGR</div>
-                                        </div>
-                                        <div className="bg-slate-50 p-4 rounded-lg">
-                                            <div className="text-2xl font-bold text-slate-800">2X</div>
-                                            <div className="text-xs text-slate-500 uppercase font-semibold">Growth</div>
-                                        </div>
-                                    </div>
-                                </Card>
-                                <Card className="p-6">
-                                    <h3 className="font-bold text-lg text-slate-800 mb-6">Strategic Roadmap</h3>
-                                    <div className="space-y-6 relative border-l-2 border-slate-100 ml-3 pl-6">
-                                        <div className="relative">
-                                            <div className="absolute -left-[33px] bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold">1</div>
-                                            <h4 className="font-bold text-sm">Product Development</h4>
-                                            <p className="text-xs text-slate-500 mt-1">MVP & RBI Compliance</p>
-                                        </div>
-                                        <div className="relative">
-                                            <div className="absolute -left-[33px] bg-slate-200 text-slate-600 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold">2</div>
-                                            <h4 className="font-bold text-sm">Campus Pilot</h4>
-                                            <p className="text-xs text-slate-500 mt-1">Odisha-based campus launch</p>
-                                        </div>
-                                        <div className="relative">
-                                            <div className="absolute -left-[33px] bg-slate-200 text-slate-600 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold">3</div>
-                                            <h4 className="font-bold text-sm">Pan-India Scale</h4>
-                                            <p className="text-xs text-slate-500 mt-1">Regional expansion</p>
-                                        </div>
-                                    </div>
-                                </Card>
                             </div>
-                        )}
-                    </main>
+                        </Card>
+
+                        <Card className="p-6">
+                            <h3 className="font-bold text-lg text-slate-800 mb-4">Strategic Roadmap</h3>
+                            <div className="relative pl-6 border-l-2 border-slate-200 space-y-8">
+                            <div className="relative">
+                                <div className="absolute -left-[31px] bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                                <h4 className="font-bold text-slate-800">Phase 1: Product Development</h4>
+                                <p className="text-sm text-slate-600 mt-1">MVP Refinement, Data Protection, RBI Compliance integration.</p>
+                            </div>
+                            <div className="relative">
+                                <div className="absolute -left-[31px] bg-white border-2 border-slate-300 text-slate-500 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                                <h4 className="font-bold text-slate-800">Phase 2: Campus Pilot</h4>
+                                <p className="text-sm text-slate-600 mt-1">5-10 College Beta, Campus Ambassador Program.</p>
+                            </div>
+                            <div className="relative">
+                                <div className="absolute -left-[31px] bg-white border-2 border-slate-300 text-slate-500 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                                <h4 className="font-bold text-slate-800">Phase 3: Scale</h4>
+                                <p className="text-sm text-slate-600 mt-1">Full "Earn & Learn" integration, Regional expansion.</p>
+                            </div>
+                            </div>
+                        </Card>
+                        </div>
+                    </div>
+                    )}
+
+                </main>
                 </div>
             );
         }
